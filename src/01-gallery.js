@@ -1,3 +1,6 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const images = [
   {
     preview:
@@ -85,48 +88,11 @@ images.forEach(image => {
   gallery.appendChild(imageLi);
 });
 
-gallery.addEventListener('click', event => {
-  event.preventDefault();
-  if (event.target.nodeName === 'IMG') {
-    console.log(`Image big: ${event.target.dataset.source}`);
-
-    LightboxModule.openLightbox(event.target.dataset.source);
-  }
+new SimpleLightbox('.gallery a', {
+  captions: true,
+  captionSelector: 'img',
+  captionType: 'attr',
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
 });
-
-//Moduł bo nie lubie publicznych zmiennych
-const LightboxModule = (function () {
-  let lightboxInstance = null;
-
-  function openLightbox(source) {
-    lightboxInstance = basicLightbox.create(`
-            <img src="${source}" width="800" height="600">
-        `);
-    lightboxInstance.show();
-
-    // Dodaj nasłuchiwanie na klawisz Escape tylko gdy lightbox jest otwarty
-    document.addEventListener('keydown', escapeListener);
-  }
-
-  function closeLightbox() {
-    if (lightboxInstance) {
-      lightboxInstance.close();
-      lightboxInstance = null;
-
-      // Usuń nasłuchiwanie na klawisz Escape po zamknięciu lightboxa
-      document.removeEventListener('keydown', escapeListener);
-    }
-  }
-
-  function escapeListener(event) {
-    if (event.key === 'Escape') {
-      closeLightbox();
-    }
-  }
-
-  // Zwróć publiczne metody
-  return {
-    openLightbox,
-    closeLightbox,
-  };
-})();
